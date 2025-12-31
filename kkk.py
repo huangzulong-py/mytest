@@ -11,10 +11,10 @@ st.set_page_config(
 )
 
 # 图片文件夹路径
-IMAGE_DIR = r"D:\streamlit_env\images"
+IMAGE_DIR = r""
 
 # 模型文件夹路径
-MODEL_DIR = r"D:\streamlit_env"
+MODEL_DIR = r""
 
 # 读取 CSV（处理编码）
 penguins_df = None
@@ -130,3 +130,4 @@ elif page == "预测分类页面":
                 st.image(logo_path, width=300)
             else:
                 st.warning(f"找不到图片: {logo_path}")
+
