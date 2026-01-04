@@ -71,7 +71,7 @@ def get_dataframe_from_csv():
     valid_cols = [col for col in core_cols if col in df.columns]
     return df[valid_cols].dropna() if valid_cols else pd.DataFrame()
 
-# -------------------------- 3. 界面1：项目介绍页面（完全保留原功能+图片展示） --------------------------
+# -------------------------- 3. 界面1：项目介绍页面（仅修改截图展示为三张手动轮播，其余完全保留） --------------------------
 def page1_project_intro():
     st.title("学生成绩分析与预测系统")
     
@@ -118,13 +118,36 @@ def page1_project_intro():
         with arch_cols[3]:
             st.markdown("#### 机器学习\nScikit-Learn")
     
-    # 界面截图展示（恢复你原有图片展示代码）
+    # 界面截图展示：修改为3张图片手动轮播（核心改动区域）
     with st.container():
         st.subheader("🖼️ 系统界面预览")
+        
+        # 1. 定义3张截图的路径和对应标题（可根据实际文件名修改）
+        carousel_images = [
+            ("专业数据分析截图.png", "专业数据分析界面"),
+            ("成绩预测分析截图.png", "成绩预测分析界面"),
+            ("专业专项分析截图.png", "专业专向界面")
+        ]
+        
+        # 2. 初始化轮播索引（使用session_state保存，避免页面刷新重置）
+        if "carousel_idx" not in st.session_state:
+            st.session_state.carousel_idx = 0
+        
+        # 3. 显示当前图片
+        current_img_path, current_img_caption = carousel_images[st.session_state.carousel_idx]
         try:
-            st.image("专业数据分析截图.png", caption="专业数据分析界面", use_container_width=True)
-        except:
-            st.warning("预览图片未找到，不影响功能使用")
+            st.image(current_img_path, caption=current_img_caption, use_container_width=True)
+        except FileNotFoundError:
+            st.warning(f"图片 {current_img_path} 未找到，请检查文件路径")
+        
+        # 4. 创建手动轮播按钮（上一张/下一张，循环切换）
+        col_prev, col_next = st.columns([1, 1])
+        with col_prev:
+            if st.button("⬅️ 上一张", use_container_width=True):
+                st.session_state.carousel_idx = (st.session_state.carousel_idx - 1) % len(carousel_images)
+        with col_next:
+            if st.button("下一张 ➡️", use_container_width=True):
+                st.session_state.carousel_idx = (st.session_state.carousel_idx + 1) % len(carousel_images)
 
 # -------------------------- 4. 界面2：专业数据分析页面（完全保留原功能） --------------------------
 def page2_major_analysis(df):
@@ -309,7 +332,6 @@ def page3_score_prediction():
 
 # -------------------------- 主函数：导航+页面切换（完全保留原逻辑） --------------------------
 def main():
-
     # 左侧导航菜单
     with st.sidebar:
         st.title("导航菜单")
